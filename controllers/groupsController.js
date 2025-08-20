@@ -28,8 +28,8 @@ async function createGroup(req, res) {
   }
 }
 
-// Read groups (All groups the user is a member of
-async function getMyGroups(req, res) {
+// Get all groups the user belongs to
+async function getGroups(req, res) {
   const user = req.user
   try {
     const { data, error } = await supabase
@@ -44,7 +44,37 @@ async function getMyGroups(req, res) {
   }
 }
 
-//  Update group (only a manager can)
+// Get single group by id
+async function getGroupById(req, res) {
+  const { id } = req.params
+  const user = req.user
+
+  try {
+    const { data, error } = await supabase
+      .from('groups')
+      .select('*')
+      .eq('group_id', id)
+      .single()
+
+    if (error) throw error
+
+    // validate user is member
+    const { data: membership, error: memErr } = await supabase
+      .from('group_members')
+      .select('role')
+      .eq('group_id', id)
+      .eq('user_id', user.id)
+      .single()
+
+    if (memErr || !membership) return res.status(403).json({ error: "Not authorized" })
+
+    res.json({ group: data, role: membership.role })
+  } catch (err) {
+    res.status(400).json({ error: err.message })
+  }
+}
+
+//  Update group (only manager allowed by RLS)
 async function updateGroup(req, res) {
   const { group_id } = req.params
   const { group_name } = req.body
@@ -66,7 +96,7 @@ async function updateGroup(req, res) {
   }
 }
 
-// Delete group (only a manager can)
+// Delete group (only manager allowed by RLS)
 async function deleteGroup(req, res) {
   const { group_id } = req.params
   try {
@@ -82,4 +112,4 @@ async function deleteGroup(req, res) {
   }
 }
 
-module.exports = { createGroup, getMyGroups, updateGroup, deleteGroup }
+module.exports = { createGroup, getGroups, getGroupById, updateGroup, deleteGroup }
