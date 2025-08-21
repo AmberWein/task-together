@@ -5,8 +5,8 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANO
 
 async function getToken() {
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: 'SUPERBASE_EMAIL',
-    password: SUPERBASE_PASSWORD
+    email: process.env.SUPABASE_EMAIL,
+    password: process.env.SUPABASE_PASSWORD
   })
 
   if (error) {
