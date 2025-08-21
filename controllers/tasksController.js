@@ -16,6 +16,26 @@ exports.createTask = async (req, res) => {
     res.status(201).json(data[0])
 }
 
+// @desc    Get a single task by ID
+// @route   GET /api/tasks/:id
+// @access  Private
+exports.getTaskById = async (req, res) => {
+    const { id } = req.params
+
+    const { data, error } = await supabase
+        .from('tasks')
+        .select(`
+            *,
+            group_members(user_id)
+        `)
+        .eq('id', id)
+
+    if (error) {
+        return res.status(400).json({ error: error.message })
+    }
+    res.status(200).json(data)
+}
+
 // @desc    Get all tasks for the authenticated user's groups
 // @route   GET /api/tasks
 // @access  Private
@@ -89,7 +109,7 @@ exports.assignTaskToUser = async (req, res) => {
 // @desc    Unssign a task from a user
 // @route   DELETE /api/tasks/:taskId/assign
 // @access  Private
-exports.assignTaskToUser = async (req, res) => {
+exports.unassignTaskFromUser = async (req, res) => {
     const { id, userId } = req.params
 
     const { data, error } = await supabase
