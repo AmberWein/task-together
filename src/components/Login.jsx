@@ -15,20 +15,15 @@ export default function Login() {
       alert("Please fill in all fields.");
       return;
     }
-
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        alert(error.message);
-      } else {
-        navigate("/dashboard"); // or wherever you want to redirect after login
-      }
-    } catch (err) {
-      alert("Login failed. Please try again.");
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      alert(error.message);
+    } else {
+      // Optionally save JWT: localStorage.setItem("jwt", data.session.access_token);
+      navigate("/dashboard");
     }
   };
 
@@ -38,22 +33,15 @@ export default function Login() {
       alert("Please enter your email.");
       return;
     }
-    try {
-      const res = await fetch("http://localhost:4000/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: resetEmail }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.error || "Failed to send reset email");
-      } else {
-        alert("Password reset email sent! Please check your inbox.");
-        setShowReset(false);
-        setResetEmail("");
-      }
-    } catch (err) {
-      alert("Network error");
+    const { data, error } = await supabase.auth.resetPasswordForEmail(
+      resetEmail
+    );
+    if (error) {
+      alert(error.message);
+    } else {
+      alert("Password reset email sent! Please check your inbox.");
+      setShowReset(false);
+      setResetEmail("");
     }
   };
 
@@ -62,29 +50,27 @@ export default function Login() {
       alert("Please enter email and password to register.");
       return;
     }
-    try {
-      const res = await fetch("http://localhost:4000/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        if (
-          data.error &&
-          data.error.toLowerCase().includes("already registered")
-        ) {
-          alert("User already exists. Please login.");
-        } else {
-          alert(data.error || "Registration failed");
-        }
+    const displayName = email.split("@")[0];
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: displayName },
+      },
+    });
+    if (error) {
+      if (
+        error.message &&
+        error.message.toLowerCase().includes("already registered")
+      ) {
+        alert("User already exists. Please login.");
       } else {
-        alert(
-          "Registration successful! Please check your email to confirm your account."
-        );
+        alert(error.message || "Registration failed");
       }
-    } catch (err) {
-      alert("Network error");
+    } else {
+      alert(
+        "Registration successful! Please check your email to confirm your account."
+      );
     }
   };
 
