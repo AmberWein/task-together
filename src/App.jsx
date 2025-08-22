@@ -8,6 +8,8 @@ import Dashboard from './pages/Dashboard';
 import HomePage from "./pages/HomePage/HomePage";
 import ProfileManagement from './pages/ProfileManagement';
 
+import UpdatePassword from './pages/UpdatePassword';
+
 function App() {
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
