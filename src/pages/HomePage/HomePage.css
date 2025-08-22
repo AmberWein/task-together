@@ -1,0 +1,156 @@
+/* --- Global Font & Base --- */
+body {
+  font-family: 'Inter', 'Roboto', sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Header --- */
+.app-header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid #eaeaea;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+/* --- Welcome Section --- */
+.welcome-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.welcome-section Text:first-child {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.welcome-section Text:last-child {
+  font-size: 1.05rem;
+  color: #555555;
+  margin-top: 4px;
+}
+
+/* --- Quick Stats --- */
+.quick-stats {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1 1 220px;
+  max-width: 300px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.stat-card-header svg {
+  color: #1971c2;
+}
+
+/* --- Quick Actions --- */
+.quick-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+
+.quick-actions button {
+  min-width: 140px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.quick-actions button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Activity Feed --- */
+.activity-feed {
+  margin-top: 24px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activity-feed h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: background 0.2s;
+  background-color: #fafafa;
+}
+
+.activity-item:hover {
+  background-color: #f0f0f0;
+}
+
+.activity-time {
+  font-size: 0.75rem;
+  color: #888888;
+  text-align: right;
+  min-width: 60px;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .quick-stats {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .quick-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .activity-feed {
+    gap: 8px;
+    padding: 16px;
+  }
+
+  .activity-time {
+    min-width: auto;
+    text-align: left;
+  }
+}
