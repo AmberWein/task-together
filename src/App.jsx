@@ -4,7 +4,7 @@ import { MantineProvider } from '@mantine/core';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './pages/Dashboard';
-import UpdatePassword from "./pages/UpdatePassword";
+
 import HomePage from "./pages/HomePage/HomePage";
 import ProfileManagement from './pages/ProfileManagement';
 
