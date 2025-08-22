@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { AppShell, SimpleGrid, Card, Stack, Divider, Text } from "@mantine/core";
+import { AppShell, SimpleGrid, Card, Stack, Divider, Text, Box, Button } from "@mantine/core";
 import { Clock, CheckCircle, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 
 import Header from "../../components/Header";
 import StatCard from "../../components/StatCard";
@@ -12,6 +14,10 @@ import { getTaskStats, getActiveGroups, getRecentActivity } from "../../services
 import "./HomePage.css";
 
 export default function HomePage() {
+  
+  const navigate = useNavigate();
+  const [active, setActive] = useState("home");
+
   const [username, setUsername] = useState("");
   const [userId, setUserId] = useState(null);
   const [stats, setStats] = useState({ pending: 0, completed: 0, groups: 0 });
@@ -47,8 +53,30 @@ export default function HomePage() {
     fetchData();
   }, [userId]);
 
+  const profileButton = (
+    <Box
+      style={{
+        display: "flex",
+        justifyContent: "flex-start",
+        paddingTop: 48,
+        paddingLeft: 48,
+      }}
+    >
+      <Button
+        onClick={() => navigate("/profile-managent")}
+        variant="filled"
+        color="gray"
+        size="md"
+        radius="md"
+      >
+        Profile Management
+      </Button>
+    </Box>
+  );
+
  return (
     <AppShell padding="md" header={<Header />}>
+      {profileButton}
       <Stack gap="xl" align="center" style={{ width: "100%" }}>
         <WelcomeSection username={username} />
 
