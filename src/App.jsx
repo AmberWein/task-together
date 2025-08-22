@@ -4,8 +4,9 @@ import { MantineProvider } from '@mantine/core';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './pages/Dashboard';
-import UpdatePassword from "./pages/UpdatePassword";
+
 import HomePage from "./pages/HomePage/HomePage";
+import ProfileManagement from './pages/ProfileManagement';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/update-password" element={<UpdatePassword />} />
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
           <Route path="/dashboard" element={<HomePage />} />
+          <Route path="/profile-managent" element={<ProfileManagement />} />
         </Routes>
       </Router>
     </MantineProvider>
