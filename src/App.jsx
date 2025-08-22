@@ -1,22 +1,28 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { MantineProvider } from '@mantine/core';
+
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './pages/Dashboard';
-import UpdatePassword from "./pages/UpdatePassword";
+
+import HomePage from "./pages/HomePage/HomePage";
 import ProfileManagement from './pages/ProfileManagement';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/update-password" element={<UpdatePassword />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profile-managent" element={<ProfileManagement />} />
-      </Routes>
-    </Router>
+    <MantineProvider withGlobalStyles withNormalizeCSS>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/update-password" element={<UpdatePassword />} />
+          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+          <Route path="/dashboard" element={<HomePage />} />
+          <Route path="/profile-managent" element={<ProfileManagement />} />
+        </Routes>
+      </Router>
+    </MantineProvider>
   );
 }
 
