@@ -60,7 +60,11 @@ export default function ProfileManagement() {
       <aside style={{ width: 180, background: "#f5f5f5", padding: 24 }}>
         <h3>TASKS</h3>
         <nav>
-          <div style={{ margin: "16px 0", color: "#333" }}>Home</div>
+          <div
+            style={{ margin: "16px 0", color: "#333", cursor: "pointer" }}
+            onClick={() => navigate("/dashboard")}>
+            Home
+          </div>
           <div style={{ margin: "16px 0", color: "#333" }}>Board</div>
           <div style={{ margin: "16px 0", color: "#333", fontWeight: "bold" }}>
             Profile
