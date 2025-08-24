@@ -8,6 +8,7 @@ import Header from "../../components/Header";
 import StatCard from "../../components/StatCard";
 import ActivityItem from "../../components/ActivityItem";
 import WelcomeSection from "../../components/WelcomeSection";
+import Sidebar from "../../components/Sidebar";
 import { supabase } from "../../supabaseClient";
 
 import { getTaskStats, getActiveGroups, getRecentActivity } from "../../services/homeService";
@@ -75,8 +76,15 @@ export default function HomePage() {
   );
 
  return (
+    <div style={{ display: "flex", height: "100vh" }}>
+        <aside
+          style={{ width: 150, background: "#f5f5f5", padding: "32px 40px"}}
+        >
+          <Sidebar active="Home" />
+        </aside>
+      <main style={{ flex: 1, padding: 0 }}>
     <AppShell padding="md" header={<Header />}>
-      {profileButton}
+      
       <Stack gap="xl" align="center" style={{ width: "100%" }}>
         <WelcomeSection username={username} />
 
@@ -102,5 +110,7 @@ export default function HomePage() {
         </Card>
       </Stack>
     </AppShell>
+    </main>
+    </div>
   );
 }

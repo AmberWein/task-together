@@ -62,7 +62,7 @@ export default function ProfileManagement() {
         <nav>
           <div
             style={{ margin: "16px 0", color: "#333", cursor: "pointer" }}
-            onClick={() => navigate("/dashboard")}>
+            onClick={() => navigate("/home")}>
             Home
           </div>
           <div style={{ margin: "16px 0", color: "#333" }}>Board</div>

@@ -5,27 +5,26 @@ export default function Sidebar({ active }) {
   const navigate = useNavigate();
 
   const menuItems = [
-    { label: "Home", path: "/dashboard" },
+    { label: "Home", path: "/home" },
     { label: "Board", path: "/board" },
     { label: "Profile", path: "/profile-managent" }, // keep same as your route
   ];
 
   return (
-    <Box w={180} bg="#f5f5f5" p={24} h="100%">
-      <Title order={3} mb="lg">
+    <Box w={400} bg="#f5f5f5" px={40} py={32} h="100%">
+      <Title order={3} mb={48}>
         TASKS
       </Title>
-      <Stack gap="xs">
+      <Stack spacing="xl"> {/* use spacing, not gap */}
         {menuItems.map((item) => (
-          <NavLink
+            <NavLink
             key={item.label}
             label={item.label}
             active={active === item.label}
             onClick={() => navigate(item.path)}
             variant={active === item.label ? "filled" : "light"}
-            color="gray"
-            style={{ cursor: "pointer" }}
-          />
+            style={{ cursor: "pointer", fontSize: 18 }} // remove padding
+            />
         ))}
       </Stack>
     </Box>
