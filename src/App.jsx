@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
+import { Notifications, notifications } from "@mantine/notifications";
 
 import Login from './components/Login';
 import Register from './components/Register';
@@ -13,6 +14,8 @@ import UpdatePassword from './pages/UpdatePassword';
 function App() {
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
+      <Notifications />
+
       <Router>
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
