@@ -33,7 +33,7 @@
 
 // export default App;
 
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from "@mantine/notifications";
 
@@ -51,13 +51,13 @@ function App() {
     <MantineProvider withGlobalStyles withNormalizeCSS>
       <Notifications />
 
-      <Router>
+      <Router basename="/task-together">
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/update-password" element={<UpdatePassword />} />
-          <Route path="/dashboard" element={<Dashboard />} /> 
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/profile-managent" element={<ProfileManagement />} />
         </Routes>
