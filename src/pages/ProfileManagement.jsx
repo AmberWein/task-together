@@ -31,19 +31,22 @@ export default function ProfileManagement() {
     e.preventDefault();
     setLoading(true);
     let errorMsg = "";
-
+    // Update name
     const { error: metaError } = await supabase.auth.updateUser({
       data: { full_name: name },
     });
     if (metaError) errorMsg += metaError.message + "\n";
-
+    // Update email
+    // if (email) {
+    //   const { error: emailError } = await supabase.auth.updateUser({ email });
+    //   if (emailError) errorMsg += emailError.message + "\n";
+    // }
+    // Update password
     if (password) {
       const { error: passError } = await supabase.auth.updateUser({ password });
       if (passError) errorMsg += passError.message + "\n";
     }
-
     setLoading(false);
-
     if (errorMsg) {
       alert(errorMsg);
     } else {
@@ -53,40 +56,91 @@ export default function ProfileManagement() {
   }
 
   return (
-    <div>
-      <h2 style={{ marginBottom: 24 }}>Profile</h2>
-      <div style={{ display: "flex", alignItems: "center", marginBottom: 32 }}>
-        {/* Avatar */}
+    <div style={{ display: "flex", height: "100vh" }}>
+      <main style={{ flex: 1, padding: 48 }}>
+        <h2 style={{ marginBottom: 32 }}>Profile</h2>
         <div
-          style={{
-            width: 80,
-            height: 80,
-            borderRadius: "50%",
-            background: "#eee",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 40,
-            marginRight: 32,
-          }}
+          style={{ display: "flex", alignItems: "center", marginBottom: 32 }}
         >
-          <span role="img" aria-label="profile">👤</span>
+          <div
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: "50%",
+              background: "#eee",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 40,
+              marginRight: 32,
+            }}
+          >
+            <span role="img" aria-label="profile">
+              👤
+            </span>
+          </div>
+          <div style={{ fontSize: 28, fontWeight: "bold" }}>
+            {name || "User"}
+          </div>
         </div>
-        {/* שם המשתמש */}
-        <div style={{ fontSize: 28, fontWeight: "bold" }}>
-          {name || "User"}
-        </div>
-      </div>
-      {/* טופס עדכון */}
-      <form onSubmit={handleSave} style={{ maxWidth: 400 }}>
-        <label>Name</label>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-        <label>Email</label>
-        <input type="email" value={email} readOnly />
-        <label>Password</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button type="submit" disabled={loading}>{loading ? "Saving..." : "Save"}</button>
-      </form>
+        <form onSubmit={handleSave} style={{ maxWidth: 400 }}>
+          <label style={{ display: "block", marginBottom: 8 }}>Name</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={{
+              width: "100%",
+              marginBottom: 16,
+              padding: 8,
+              borderRadius: 6,
+              border: "1px solid #ccc",
+            }}
+          />
+          <label style={{ display: "block", marginBottom: 8 }}>Email</label>
+          <input
+            type="email"
+            value={email}
+            readOnly
+            style={{
+              width: "100%",
+              marginBottom: 16,
+              padding: 8,
+              borderRadius: 6,
+              border: "1px solid #ccc",
+            }}
+          />
+          <label style={{ display: "block", marginBottom: 8 }}>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{
+              width: "100%",
+              marginBottom: 24,
+              padding: 8,
+              borderRadius: 6,
+              border: "1px solid #ccc",
+            }}
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: "40%",
+              padding: 12,
+              borderRadius: 6,
+              border: "none",
+              background: "#d3d3d3",
+              fontWeight: "bold",
+              fontSize: "1rem",
+              cursor: "pointer",
+            }}
+          >
+            Save
+          </button>
+        </form>
+      </main>
     </div>
   );
 }
