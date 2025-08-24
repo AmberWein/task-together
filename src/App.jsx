@@ -16,7 +16,7 @@ function App() {
     <MantineProvider withGlobalStyles withNormalizeCSS>
       <Notifications />
 
-      <Router>
+      <Router basename="/task-together">
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
