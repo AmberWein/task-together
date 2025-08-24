@@ -6,7 +6,7 @@ export default function Sidebar({ active }) {
 
   const menuItems = [
     { label: "Home", path: "/home" },
-    { label: "Board", path: "/board" },
+    { label: "Board", path: "/dashboard" },
     { label: "Profile", path: "/profile-managent" }, // keep same as your route
   ];
 

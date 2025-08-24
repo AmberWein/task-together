@@ -159,7 +159,7 @@ export default function Dashboard() {
 
   const getFilteredAndSortedTasks = () => {
     let filteredTasks = tasks;
-
+    
     // Filtering logic
     if (filter !== 'all') {
       filteredTasks = filteredTasks.filter(task => {
