@@ -57,20 +57,6 @@ export default function ProfileManagement() {
 
   return (
     <div style={{ display: "flex", height: "100vh" }}>
-      <aside style={{ width: 180, background: "#f5f5f5", padding: 24 }}>
-        <h3>TASKS</h3>
-        <nav>
-          <div
-            style={{ margin: "16px 0", color: "#333", cursor: "pointer" }}
-            onClick={() => navigate("/home")}>
-            Home
-          </div>
-          <div style={{ margin: "16px 0", color: "#333" }}>Board</div>
-          <div style={{ margin: "16px 0", color: "#333", fontWeight: "bold" }}>
-            Profile
-          </div>
-        </nav>
-      </aside>
       <main style={{ flex: 1, padding: 48 }}>
         <h2 style={{ marginBottom: 32 }}>Profile</h2>
         <div

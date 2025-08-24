@@ -76,12 +76,7 @@ export default function HomePage() {
   );
 
  return (
-    <div style={{ display: "flex", height: "100vh" }}>
-        <aside
-          style={{ width: 150, background: "#f5f5f5", padding: "32px 40px"}}
-        >
-          <Sidebar active="Home" />
-        </aside>
+    <div>
       <main style={{ flex: 1, padding: 0 }}>
     <AppShell padding="md" header={<Header />}>
       
