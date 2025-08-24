@@ -80,7 +80,7 @@ export default function HomePage() {
         <aside
           style={{ width: 150, background: "#f5f5f5", padding: "32px 40px"}}
         >
-          <Sidebar active="Home" />
+          {/* <Sidebar active="Home" /> */}
         </aside>
       <main style={{ flex: 1, padding: 0 }}>
     <AppShell padding="md" header={<Header />}>
