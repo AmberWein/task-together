@@ -2,7 +2,7 @@
   "name": "task-together",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://itamarc101.github.io/task-together",
+  "homepage": "https://amberwein.github.io/task-together/",
   "dependencies": {
     "@mantine/core": "^8.2.7",
     "@mantine/form": "^8.2.5",
