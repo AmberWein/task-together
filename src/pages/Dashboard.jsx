@@ -18,15 +18,16 @@ export default function Dashboard() {
     try {
       setLoading(true);
       const { data: tasksData, error: tasksError } = await supabase
-        .from('tasks') 
+        .from('tasks')
         .select('*')
         .order('task_id', { ascending: true });
-
+ 
       if (tasksError) throw tasksError;
  
+      // Query the public profiles table for both id and email
       const { data: usersData, error: usersError } = await supabase
-        .from('auth.users')
-        .select('id, email, displayed_name');
+        .from('profiles')
+        .select('id, email');
  
       const { data: assignmentsData, error: assignmentsError } = await supabase
         .from('taskassignments')
@@ -45,7 +46,6 @@ export default function Dashboard() {
         return acc;
        }, {});
  
-       // איחוד הנתונים
       const mergedTasks = tasksData.map(task => {
         const creator = usersMap[task.creator_id] || {};
         const assignedUserIds = assignmentsMap[task.task_id] || [];
@@ -54,7 +54,7 @@ export default function Dashboard() {
         return {
           ...task,
           creator: { email: creator.email || 'N/A' },
-          assigned_to: assignedUsers.map(user => ({ user: { email: user.email, displayed_name: user.displayed_name } })),
+          assigned_to: assignedUsers.map(user => ({ user: { email: user.email } })),
        };
       });
  

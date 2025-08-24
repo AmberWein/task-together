@@ -87,8 +87,11 @@ body {
 }
 
 .dashboard-container.modal-open {
-  filter: blur(5px);
   pointer-events: none;
+}
+
+.task-modal-overlay {
+  pointer-events: auto;
 }
 
 .dashboard-container.modal-open > * {
