@@ -11,7 +11,7 @@ export default function Layout() {
         <nav>
           <div onClick={() => navigate("/home")} style={{ margin: "16px 0", cursor: "pointer" }}>Home</div>
           <div onClick={() => navigate("/dashboard")} style={{ margin: "16px 0", cursor: "pointer" }}>Board</div>
-          <div onClick={() => navigate("/profile-management")} style={{ margin: "16px 0", cursor: "pointer", fontWeight: "bold" }}>Profile</div>
+          <div onClick={() => navigate("/profile-management")} style={{ margin: "16px 0", cursor: "pointer"}}>Profile</div>
         </nav>
       </aside>
       <main style={{ flex: 1, padding: 24 }}>
