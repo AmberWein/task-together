@@ -39,28 +39,36 @@ export default function TaskModal({ task, onClose , onSave}) {
             <input type="text" name="title" value={editedTask.title} onChange={handleChange} />
           </div>
           <div className="form-group">
-            <label>Group:</label>
-            <input type="text" name="group" value={editedTask.group} onChange={handleChange} />
+            <label>Group ID:</label>
+            <input type="text" name="group_id" value={editedTask.group_id || ''} onChange={handleChange} />
           </div>
           <div className="form-group">
-            <label>Manager:</label>
-            <input type="text" name="manager" value={editedTask.manager} onChange={handleChange} />
+            <label>Creator ID:</label>
+            <input type="text" name="creator_id" value={editedTask.creator_id.name || ''} disabled />
           </div>
           <div className="form-group">
-            <label>Start Date:</label>
-            <input type="date" name="startDate" value={editedTask.startDate} onChange={handleChange} />
+            <label>Created At:</label>
+            <input type="text" name="created_at" value={editedTask.created_at || ''} disabled />
           </div>
           <div className="form-group">
-            <label>End Date:</label>
-            <input type="date" name="endDate" value={editedTask.endDate} onChange={handleChange} />
+            <label>Updated At:</label>
+            <input type="text" name="updated_at" value={editedTask.updated_at || ''} disabled />
           </div>
           <div className="form-group">
-            <label>Members (comma-separated):</label>
+            <label>Due Date:</label>
+            <input type="date" name="due_date" value={editedTask.due_date ? editedTask.due_date.substring(0, 10) : ''} onChange={handleChange} />
+          </div>
+          <div className="form-group">
+            <label>Assignrd to:</label>
             <input type="text" name="members" value={editedTask.members ? editedTask.members.join(', ') : ''} onChange={handleChange} />
           </div>
           <div className="form-group">
             <label>Description:</label>
-            <textarea name="description" value={editedTask.description} onChange={handleChange}></textarea>
+            <textarea name="description" value={editedTask.description || ''} onChange={handleChange}></textarea>
+          </div>
+          <div className="form-group">
+            <label>Recurrence:</label>
+            <input type="text" name="recurrence" value={editedTask.recurrence || ''} onChange={handleChange} />
           </div>
           <div className="form-group">
             <label>Status:</label>

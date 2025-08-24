@@ -28,16 +28,16 @@ export default function TaskCard({ task }) {
         <div className="task-group">
           <strong>Group:</strong> {task.group}
         </div>
-        <div className="task-manager">
-          <strong>Manager:</strong> {task.manager}
+        <div className="task-creator">
+          <strong>Creator:</strong> {task.creator?.email || 'N/A'}
         </div>
         {task.startDate && (
           <div className="task-dates">
-            <strong>Dates:</strong> {task.startDate} - {task.endDate || 'N/A'}
+            <strong>Dates:</strong> {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'N/A'}
           </div>
         )}
-        <div className="task-members">
-          <strong>Members:</strong> {task.members ? task.members.join(', ') : 'N/A'}
+        <div className="task-assigned">
+            <strong>Assigned To:</strong> {task.assigned_to || 'None'}
         </div>
       </div>
     </div>
