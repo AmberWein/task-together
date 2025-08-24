@@ -34,14 +34,14 @@ export default function TaskModal({ task, onClose, onSave, isNewTask }) {
     if (selectedUserId) {
         const selectedProfile = profiles.find(p => p.id === selectedUserId);
         setEditedTask(prevTask => ({
-            ...prevTask,
-            assigned_to: [{ user: selectedProfile }]
+          ...prevTask,
+          assigned_to: [{ user: selectedProfile }]
         }));
     } else {
         setEditedTask(prevTask => ({
-            ...prevTask,
-            assigned_to: []
-        }));
+          ...prevTask,
+          assigned_to: []
+      }));
     }
   };
 

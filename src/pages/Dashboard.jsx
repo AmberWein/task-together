@@ -22,7 +22,7 @@ export default function Dashboard() {
         .select(`
           *,
           creator:profiles!creator_id(email, displayed_name),
-          assigned_to:taskassignments(user:profiles!user_id(email, displayed_name))
+          assigned_to:taskassignments(user:profiles!user_id(id, email, displayed_name))
         `)
         .order('task_id', { ascending: true });
 
@@ -167,6 +167,19 @@ export default function Dashboard() {
   };
 
   const handleDeleteTask = async (taskId) => {
+    // Check if the user is logged in
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !session) {
+      alert('You must be logged in to delete a task.');
+      return;
+    }
+    // Check if the current user is the creator of the task.
+    const isCreator = tasks.find(t => t.task_id === taskId)?.creator_id === session?.user.id;
+    if (!isCreator) {
+      alert('Error: You are not authorized to delete this task.');
+      return;
+    }
+
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
         const { error } = await supabase
@@ -197,7 +210,7 @@ export default function Dashboard() {
       filteredTasks = filteredTasks.filter(task => {
         switch (filter) {
           case 'assigned-to-me':
-            return task.assigned_to.some(a => a.user.email === supabase.auth.user().email);
+            return task.assigned_to && task.assigned_to.find(a => a.user.id === currentUserId);
           case 'completed':
             return task.status === 'DONE';
           case 'to-do':
