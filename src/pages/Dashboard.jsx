@@ -19,56 +19,38 @@ export default function Dashboard() {
       setLoading(true);
       const { data: tasksData, error: tasksError } = await supabase
         .from('tasks')
-        .select('*')
+        .select(`
+          *,
+          creator:profiles!creator_id(email, displayed_name),
+          assigned_to:taskassignments(user:profiles!user_id(email, displayed_name))
+        `)
         .order('task_id', { ascending: true });
- 
+
       if (tasksError) throw tasksError;
- 
-      // Query the public profiles table for both id and email
-      const { data: usersData, error: usersError } = await supabase
-        .from('profiles')
-        .select('id, email');
- 
-      const { data: assignmentsData, error: assignmentsError } = await supabase
-        .from('taskassignments')
-        .select('task_id, user_id');
- 
-      if (usersError || assignmentsError) throw (usersError || assignmentsError);
- 
-      const usersMap = usersData.reduce((acc, user) => {
-        acc[user.id] = user;
-        return acc;
-       }, {});
- 
-      const assignmentsMap = assignmentsData.reduce((acc, assignment) => {
-        if (!acc[assignment.task_id]) acc[assignment.task_id] = [];
-        acc[assignment.task_id].push(assignment.user_id);
-        return acc;
-       }, {});
- 
+
       const mergedTasks = tasksData.map(task => {
-        const creator = usersMap[task.creator_id] || {};
-        const assignedUserIds = assignmentsMap[task.task_id] || [];
-        const assignedUsers = assignedUserIds.map(userId => usersMap[userId]).filter(Boolean);
- 
+        const creator = task.creator || {};
+        const assignedUsers = task.assigned_to.map(assignment => ({
+          user: assignment.user || {},
+        }));
         return {
           ...task,
           creator: { email: creator.email || 'N/A' },
-          assigned_to: assignedUsers.map(user => ({ user: { email: user.email } })),
-       };
+          assigned_to: assignedUsers,
+        };
       });
- 
+
       setTasks(mergedTasks);
-    }catch (error) {
+    } catch (error) {
       console.error('Error fetching tasks:', error.message);
       alert('Failed to fetch tasks: ' + error.message);
-    }finally {
+    } finally {
       setLoading(false);
     }
-   };
+  };
 
   useEffect(() => {
-    requireAuth(); 
+    requireAuth();
     const fetchUser = async () => {
       const { data: { session }, error } = await supabase.auth.getSession();
         if (session) {
@@ -101,20 +83,37 @@ export default function Dashboard() {
         alert('You must be logged in to update a task.');
         return;
       }
+
+      // Explicitly select only the fields that exist in the 'tasks' table
+      const taskData = {
+        title: updatedTask.title,
+        description: updatedTask.description,
+        status: updatedTask.status,
+        due_date: updatedTask.due_date,
+        group_id: updatedTask.group_id,
+      };
+
+      let taskId;
       let error = null;
+
       if (isNewTask) {
-        const { error: insertError } = await supabase
+        const { data: insertData, error: insertError } = await supabase
           .from('tasks')
           .insert({
-            ...updatedTask,
+            ...taskData,
             creator_id: session.user.id,
-          });
+          })
+          .select();
         error = insertError;
+        if (insertData && insertData.length > 0) {
+          taskId = insertData[0].task_id;
+        }
       } else {
+        taskId = updatedTask.task_id;
         const { error: updateError } = await supabase
           .from('tasks')
-          .update(updatedTask)
-          .eq('task_id', updatedTask.task_id);
+          .update(taskData)
+          .eq('task_id', taskId);
         error = updateError;
       }
 
@@ -127,10 +126,43 @@ export default function Dashboard() {
         throw error;
       }
 
+      // Handle task assignments separately
+      if (taskId) {
+        // First, delete any existing assignments for this task
+        const { error: deleteAssignmentsError } = await supabase
+          .from('taskassignments')
+          .delete()
+          .eq('task_id', taskId);
+
+        if (deleteAssignmentsError) {
+          throw deleteAssignmentsError;
+        }
+
+        // Then, insert the new assignments. Use '|| []' to prevent the error
+        // when `assigned_to` is undefined.
+        const newAssignments = (updatedTask.assigned_to || []).map(a => ({
+          task_id: taskId,
+          user_id: a.user.id,
+        }));
+        if (newAssignments.length > 0) {
+          const { error: insertAssignmentsError } = await supabase
+            .from('taskassignments')
+            .insert(newAssignments);
+
+          if (insertAssignmentsError) {
+            throw insertAssignmentsError;
+          }
+        }
+      }
+
+      // Success alert
+      alert('Task saved successfully!');
       fetchTasks();
       closeTaskModal();
     } catch (error) {
       console.error('Error saving task:', error.message);
+      // Fallback alert for any other issues
+      alert('Failed to save task: ' + error.message);
     }
   };
 
@@ -145,7 +177,7 @@ export default function Dashboard() {
         if (error) {
           alert('Error deleting task: ' + error.message);
         } else {
-          fetchTasks(); 
+          fetchTasks();
         }
       } catch (error) {
         console.error('Error deleting task:', error.message);
@@ -159,7 +191,7 @@ export default function Dashboard() {
 
   const getFilteredAndSortedTasks = () => {
     let filteredTasks = tasks;
-    
+
     // Filtering logic
     if (filter !== 'all') {
       filteredTasks = filteredTasks.filter(task => {
@@ -226,13 +258,13 @@ export default function Dashboard() {
           +
         </button>
       </div>
-      <div className="task-list">        
+      <div className="task-list">
         {displayedTasks.length > 0 ? (displayedTasks.map((task) => (
           <div key={task.task_id} onClick={() => openTaskModal(task)} style={{ position: 'relative' }}>
-             <button 
-                className="delete-task-btn" 
-                onClick={(e) => { 
-                  e.stopPropagation(); 
+             <button
+                className="delete-task-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
                   handleDeleteTask(task.task_id);
                 }}
               ></button>
@@ -252,4 +284,3 @@ export default function Dashboard() {
     </div>
   );
 }
-

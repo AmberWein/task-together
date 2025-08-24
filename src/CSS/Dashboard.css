@@ -95,7 +95,7 @@ body {
 }
 
 .dashboard-container.modal-open > * {
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .add-task-btn {
