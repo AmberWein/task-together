@@ -23,7 +23,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/update-password" element={<UpdatePassword />} />
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-          <Route path="/dashboard" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/profile-managent" element={<ProfileManagement />} />
         </Routes>
       </Router>
