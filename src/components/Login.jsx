@@ -23,7 +23,7 @@ export default function Login() {
       alert(error.message);
     } else {
       // Optionally save JWT: localStorage.setItem("jwt", data.session.access_token);
-      navigate("/dashboard");
+      navigate("/home");
     }
   };
 
