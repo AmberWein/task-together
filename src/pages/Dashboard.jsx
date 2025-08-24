@@ -12,24 +12,60 @@ export default function Dashboard() {
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('none');
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [isNewTask, setIsNewTask] = useState(false);
 
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      const { data: tasksData, error: tasksError } = await supabase
         .from('tasks') 
-        .select('*,  creator:creator_id ( email )')
+        .select('*')
         .order('task_id', { ascending: true });
 
-      if (error) throw error;
-      setTasks(data);
-    } catch (error) {
+      if (tasksError) throw tasksError;
+ 
+      const { data: usersData, error: usersError } = await supabase
+        .from('auth.users')
+        .select('id, email, displayed_name');
+ 
+      const { data: assignmentsData, error: assignmentsError } = await supabase
+        .from('taskassignments')
+        .select('task_id, user_id');
+ 
+      if (usersError || assignmentsError) throw (usersError || assignmentsError);
+ 
+      const usersMap = usersData.reduce((acc, user) => {
+        acc[user.id] = user;
+        return acc;
+       }, {});
+ 
+      const assignmentsMap = assignmentsData.reduce((acc, assignment) => {
+        if (!acc[assignment.task_id]) acc[assignment.task_id] = [];
+        acc[assignment.task_id].push(assignment.user_id);
+        return acc;
+       }, {});
+ 
+       // איחוד הנתונים
+      const mergedTasks = tasksData.map(task => {
+        const creator = usersMap[task.creator_id] || {};
+        const assignedUserIds = assignmentsMap[task.task_id] || [];
+        const assignedUsers = assignedUserIds.map(userId => usersMap[userId]).filter(Boolean);
+ 
+        return {
+          ...task,
+          creator: { email: creator.email || 'N/A' },
+          assigned_to: assignedUsers.map(user => ({ user: { email: user.email, displayed_name: user.displayed_name } })),
+       };
+      });
+ 
+      setTasks(mergedTasks);
+    }catch (error) {
       console.error('Error fetching tasks:', error.message);
       alert('Failed to fetch tasks: ' + error.message);
-    } finally {
+    }finally {
       setLoading(false);
     }
-  };
+   };
 
   useEffect(() => {
     requireAuth(); 
@@ -43,12 +79,14 @@ export default function Dashboard() {
     fetchTasks();
   }, []);
 
-  const openTaskModal = (task) => {
+  const openTaskModal = (task, isNew = false) => {
     setSelectedTask(task);
+    setIsNewTask(isNew);
   };
 
   const closeTaskModal = () => {
     setSelectedTask(null);
+    setIsNewTask(false);
   };
 
   const handleSaveTask = async (updatedTask) => {
@@ -63,10 +101,22 @@ export default function Dashboard() {
         alert('You must be logged in to update a task.');
         return;
       }
-      const { data, error } = await supabase
-        .from('tasks')
-        .update(updatedTask)
-        .eq('task_id', updatedTask.task_id);
+      let error = null;
+      if (isNewTask) {
+        const { error: insertError } = await supabase
+          .from('tasks')
+          .insert({
+            ...updatedTask,
+            creator_id: session.user.id,
+          });
+        error = insertError;
+      } else {
+        const { error: updateError } = await supabase
+          .from('tasks')
+          .update(updatedTask)
+          .eq('task_id', updatedTask.task_id);
+        error = updateError;
+      }
 
       if (error) {
         if (error.message.includes('not permitted')) {
@@ -77,10 +127,29 @@ export default function Dashboard() {
         throw error;
       }
 
-      setTasks(tasks.map(task => (task.task_id === updatedTask.task_id ? updatedTask : task)));
+      fetchTasks();
       closeTaskModal();
     } catch (error) {
       console.error('Error saving task:', error.message);
+    }
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      try {
+        const { error } = await supabase
+          .from('tasks')
+          .delete()
+          .eq('task_id', taskId);
+
+        if (error) {
+          alert('Error deleting task: ' + error.message);
+        } else {
+          fetchTasks(); 
+        }
+      } catch (error) {
+        console.error('Error deleting task:', error.message);
+      }
     }
   };
 
@@ -96,7 +165,7 @@ export default function Dashboard() {
       filteredTasks = filteredTasks.filter(task => {
         switch (filter) {
           case 'assigned-to-me':
-            return task.assigned_to === currentUserId; 
+            return task.assigned_to.some(a => a.user.email === supabase.auth.user().email);
           case 'completed':
             return task.status === 'DONE';
           case 'to-do':
@@ -153,11 +222,23 @@ export default function Dashboard() {
             <option value="due-date">Due Date</option>
           </select>
         </div>
+        <button className="add-task-btn" onClick={() => openTaskModal({}, true)}>
+          +
+        </button>
       </div>
       <div className="task-list">        
         {displayedTasks.length > 0 ? (displayedTasks.map((task) => (
-          <div key={task.task_id} onClick={() => openTaskModal(task)} style={{ cursor: 'pointer' }}>
-            <TaskCard task={task} />
+          <div key={task.task_id} onClick={() => openTaskModal(task)} style={{ position: 'relative' }}>
+             <button 
+                className="delete-task-btn" 
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  handleDeleteTask(task.task_id);
+                }}
+              ></button>
+            <div onClick={() => openTaskModal(task)} style={{ cursor: 'pointer' }}>
+                <TaskCard task={task} />
+            </div>
           </div>
         ))
         ) : (
@@ -166,7 +247,7 @@ export default function Dashboard() {
       </div>
 
       {selectedTask && (
-        <TaskModal task={selectedTask} onClose={closeTaskModal} onSave={handleSaveTask}/>
+        <TaskModal task={selectedTask} onClose={closeTaskModal} onSave={handleSaveTask} isNewTask={isNewTask}/>
       )}
     </div>
   );

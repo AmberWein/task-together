@@ -15,6 +15,10 @@ export default function TaskCard({ task }) {
     }
   };
 
+  const assignedUserEmail = task.assigned_to && task.assigned_to.length > 0
+    ? task.assigned_to.map(a => a.user.email).join(', ')
+    : 'None';
+
   return (
     <div className="task-card">
       <div className="task-header">
@@ -26,10 +30,10 @@ export default function TaskCard({ task }) {
       <p className="task-description">{task.description}</p>
       <div className="task-details">
         <div className="task-group">
-          <strong>Group:</strong> {task.group}
+          <strong>Group ID:</strong> {task.group_id || 'N/A'}
         </div>
         <div className="task-creator">
-          <strong>Creator:</strong> {task.creator?.email || 'N/A'}
+          <strong>Creator Email:</strong> {task.creator?.email || 'N/A'}
         </div>
         {task.startDate && (
           <div className="task-dates">
@@ -37,7 +41,7 @@ export default function TaskCard({ task }) {
           </div>
         )}
         <div className="task-assigned">
-            <strong>Assigned To:</strong> {task.assigned_to || 'None'}
+            <strong>Assigned To:</strong> {assignedUserEmail}
         </div>
       </div>
     </div>
