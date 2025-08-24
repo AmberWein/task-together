@@ -17,7 +17,6 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "gh-pages": "^5.0.0",
     "lucide-react": "^0.540.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -50,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
